@@ -1,0 +1,58 @@
+﻿@model IEnumerable<BlogTest3.Models.Blog>
+
+@using Microsoft.AspNetCore.Identity
+@using BlogTest3.Areas.Identity.Data
+
+@inject SignInManager<BlogTest3User> SignInManager
+@inject UserManager<BlogTest3User> UserManager
+
+@{
+    ViewData["Title"] = "Blog Posts";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Blog Posts</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <p> You are logged in as ID: @UserManager.GetUserId(User)</p>
+    }
+</p>
+
+
+<body>
+    @foreach(var item in Model)
+    {
+        <div class="blog-list p-3 border rounded mb-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="mb-0">@Html.DisplayFor(modelItem => item.BlogTitle)</h1>
+                <div class="text-end ms-3">
+                    <p class="mb-0">
+                        <strong>Created by:</strong> @Html.DisplayFor(modelItem => item.User.UserName)
+                    </p>
+                    <p class="mb-0 text-muted">
+                        <strong>At:</strong> @Html.DisplayFor(modelItem => item.CreatedAt)
+                    </p>
+                    <div class="text-end">
+                        @if (item.UserId == UserManager.GetUserId(User))
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.BlogId">Edit</a>
+                            <a asp-action="Details" asp-route-id="@item.BlogId">Details</a>
+                            <a asp-action="Delete" asp-route-id="@item.BlogId">Delete</a>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="blog-content mt-3">
+                <p class="mb-0">
+                    @Html.DisplayFor(modelItem => item.BlogContent)
+                </p>
+            </div>
+            <a asp-action="Details" asp-route-id="@item.BlogId">Read More...</a>
+        </div>
+    }
+</body>
+
+</html>
